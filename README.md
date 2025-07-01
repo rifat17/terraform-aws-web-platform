@@ -106,6 +106,9 @@ ssh -i <key-file> ubuntu@<PUBLIC_IP>
 | `node_version` | Node.js version | `20` |
 | `python_version` | Python version | `3.11` |
 | `app_port` | Application port | `3000` |
+| `create_iam_role` | Auto-create IAM role | `false` |
+| `iam_instance_profile` | Existing IAM instance profile | `""` |
+| `iam_policies` | IAM policies for created role | `["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]` |
 
 ## Examples
 
@@ -123,6 +126,23 @@ project_name = "my-django-app"
 python_version = "3.11"
 app_port = 8000
 create_key_pair = true
+```
+
+### With Custom IAM Role
+```hcl
+project_name = "my-app"
+create_iam_role = true
+iam_policies = [
+  "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+  "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+]
+```
+
+### With Existing IAM Profile
+```hcl
+project_name = "my-app"
+create_iam_role = false
+iam_instance_profile = "my-existing-profile"
 ```
 
 ## Cleanup

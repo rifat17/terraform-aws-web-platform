@@ -129,12 +129,58 @@ resource "aws_key_pair" "ssh_key" {
   }
 }
 
+# IAM Role for EC2 instance
+resource "aws_iam_role" "ec2_role" {
+  count = var.create_iam_role ? 1 : 0
+  name  = "${var.project_name}-ec2-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+
+  tags = {
+    Name        = "${var.project_name}-ec2-role"
+    Environment = var.environment
+    Project     = var.project_name
+  }
+}
+
+# Attach policies to IAM role
+resource "aws_iam_role_policy_attachment" "ec2_policies" {
+  count      = var.create_iam_role ? length(var.iam_policies) : 0
+  role       = aws_iam_role.ec2_role[0].name
+  policy_arn = var.iam_policies[count.index]
+}
+
+# IAM Instance Profile
+resource "aws_iam_instance_profile" "ec2_profile" {
+  count = var.create_iam_role ? 1 : 0
+  name  = "${var.project_name}-ec2-profile"
+  role  = aws_iam_role.ec2_role[0].name
+
+  tags = {
+    Name        = "${var.project_name}-ec2-profile"
+    Environment = var.environment
+    Project     = var.project_name
+  }
+}
+
 # EC2 Instance
 resource "aws_instance" "web_server" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
   key_name               = var.create_key_pair ? aws_key_pair.ssh_key[0].key_name : var.key_name
   vpc_security_group_ids = [aws_security_group.web_sg.id]
+  iam_instance_profile   = var.create_iam_role ? aws_iam_instance_profile.ec2_profile[0].name : var.iam_instance_profile
 
   root_block_device {
     volume_type = var.storage_type

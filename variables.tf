@@ -75,3 +75,21 @@ variable "app_port" {
   type        = number
   default     = 3000
 }
+
+variable "create_iam_role" {
+  description = "Whether to create a new IAM role or use existing one"
+  type        = bool
+  default     = false
+}
+
+variable "iam_instance_profile" {
+  description = "Name of existing IAM instance profile (only used if create_iam_role is false)"
+  type        = string
+  default     = ""
+}
+
+variable "iam_policies" {
+  description = "List of IAM policy ARNs to attach to the created role"
+  type        = list(string)
+  default     = ["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]
+}
