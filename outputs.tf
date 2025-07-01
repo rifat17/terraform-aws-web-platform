@@ -30,5 +30,5 @@ output "ssh_command" {
 
 output "rsync_command" {
   description = "Rsync command to deploy files"
-  value       = "rsync -avz --progress --exclude='.next/' --exclude='node_modules/' --exclude='.git/' -e 'ssh -i ${var.create_key_pair ? "${var.key_name}.pem" : var.private_key_path}' ./ ubuntu@${aws_eip.web_eip.public_ip}:/home/ubuntu/{${var.project_name}"
+  value       = "rsync -avz --progress --exclude='.next/' --exclude='node_modules/' --exclude='.git/' -e 'ssh -i ${var.create_key_pair ? "${var.key_name}.pem" : var.private_key_path}' ./ ubuntu@${aws_eip.web_eip.public_ip}:/home/ubuntu/${var.project_name}"
 }
