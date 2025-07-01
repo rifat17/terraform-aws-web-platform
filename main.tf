@@ -72,9 +72,9 @@ resource "aws_security_group" "web_sg" {
   }
 
   ingress {
-    description = "Next.js Dev Server"
-    from_port   = 3000
-    to_port     = 3000
+    description = "Application Server"
+    from_port   = var.app_port
+    to_port     = var.app_port
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -145,6 +145,7 @@ resource "aws_instance" "web_server" {
   user_data = base64encode(templatefile("${path.module}/user_data.sh", {
     node_version = var.node_version
     project_name = var.project_name
+    app_port     = var.app_port
     scripts = {
       system_update   = file("${path.module}/scripts/system-update.sh")
       nodejs_install  = file("${path.module}/scripts/nodejs-install.sh")

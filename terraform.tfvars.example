@@ -19,3 +19,6 @@ key_name = "my-web-app-key"
 # Runtime Versions
 node_version = "20"
 python_version = "3.11"
+
+# Application Port
+app_port = 3000  # Use 3000 for Node.js, 8000 for Python

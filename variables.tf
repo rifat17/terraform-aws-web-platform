@@ -69,3 +69,9 @@ variable "python_version" {
   type        = string
   default     = "3.11"
 }
+
+variable "app_port" {
+  description = "Application port (3000 for Node.js, 8000 for Python)"
+  type        = number
+  default     = 3000
+}

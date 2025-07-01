@@ -15,6 +15,10 @@ EOF
 # Replace python_version placeholder
 sed -i 's/\${python_version}/${python_version}/g' /tmp/scripts/python-install.sh
 
+# Replace app_port placeholder in scripts
+sed -i 's/\${app_port}/${app_port}/g' /tmp/scripts/nginx-setup-python.sh
+sed -i 's/\${app_port}/${app_port}/g' /tmp/scripts/python-app-setup.sh
+
 cat > /tmp/scripts/nginx-setup-python.sh << 'EOF'
 ${scripts.nginx_setup_python}
 EOF

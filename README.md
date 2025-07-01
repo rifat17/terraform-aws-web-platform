@@ -98,6 +98,7 @@ ssh -i <key-file> ubuntu@<PUBLIC_IP>
 | `private_key_path` | Path to private key | `./shared-key.pem` |
 | `node_version` | Node.js version | `20` |
 | `python_version` | Python version | `3.11` |
+| `app_port` | Application port | `3000` |
 
 ## Examples
 
@@ -105,6 +106,7 @@ ssh -i <key-file> ubuntu@<PUBLIC_IP>
 ```hcl
 project_name = "my-nextjs-app"
 node_version = "20"
+app_port = 3000
 create_key_pair = true
 ```
 
@@ -112,6 +114,7 @@ create_key_pair = true
 ```hcl
 project_name = "my-django-app"
 python_version = "3.11"
+app_port = 8000
 create_key_pair = true
 ```
 

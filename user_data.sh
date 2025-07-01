@@ -27,6 +27,10 @@ EOF
 # Make scripts executable
 chmod +x /tmp/scripts/*.sh
 
+# Replace app_port placeholder in scripts
+sed -i 's/\${app_port}/${app_port}/g' /tmp/scripts/nginx-setup.sh
+sed -i 's/\${app_port}/${app_port}/g' /tmp/scripts/app-setup.sh
+
 # System update and essential packages
 /tmp/scripts/system-update.sh
 

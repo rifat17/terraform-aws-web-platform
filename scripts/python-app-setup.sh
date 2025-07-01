@@ -27,9 +27,9 @@ python manage.py collectstatic --noinput
 pkill -f gunicorn || true
 
 # Start application with gunicorn
-gunicorn --bind 0.0.0.0:8000 --workers 3 --daemon wsgi:application
+gunicorn --bind 0.0.0.0:${app_port} --workers 3 --daemon wsgi:application
 
-# For FastAPI, use: gunicorn -w 3 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:8000 --daemon
+# For FastAPI, use: gunicorn -w 3 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:${app_port} --daemon
 EOF
 
 chmod +x /home/ubuntu/deploy.sh
@@ -46,7 +46,7 @@ User=ubuntu
 Group=ubuntu
 WorkingDirectory=/home/ubuntu/app
 Environment=PATH=/home/ubuntu/app/venv/bin
-ExecStart=/home/ubuntu/app/venv/bin/gunicorn --bind 0.0.0.0:8000 --workers 3 wsgi:application
+ExecStart=/home/ubuntu/app/venv/bin/gunicorn --bind 0.0.0.0:${app_port} --workers 3 wsgi:application
 Restart=always
 
 [Install]
