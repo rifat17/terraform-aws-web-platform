@@ -79,8 +79,14 @@ After infrastructure is ready:
 # SSH to the server
 ssh -i <key-file> ubuntu@<PUBLIC_IP>
 
-# Deploy your application
+# The setup scripts create a deploy.sh script on the server
+# Use it to deploy your application code
 ./deploy.sh
+
+# Or implement your own deployment strategy:
+# - Upload code via rsync, git clone, or CI/CD
+# - Install dependencies and build
+# - Start/restart application services
 ```
 
 ## Configuration Variables
