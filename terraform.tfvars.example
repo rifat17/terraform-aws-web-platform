@@ -1,0 +1,21 @@
+# Project Configuration
+project_name = "my-web-app"
+environment = "development"
+
+# AWS Configuration
+aws_region = "us-east-1"
+aws_profile = "default"
+
+# Instance Configuration
+instance_type = "t3.medium"
+storage_size = 30
+storage_type = "gp3"
+
+# SSH Key Configuration
+create_key_pair = true
+key_name = "my-web-app-key"
+# private_key_path = "./my-existing-key.pem"  # Only if create_key_pair = false
+
+# Runtime Versions
+node_version = "20"
+python_version = "3.11"
