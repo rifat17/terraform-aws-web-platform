@@ -49,6 +49,7 @@ Switch to Python setup by updating `main.tf`:
 user_data = base64encode(templatefile("${path.module}/user_data_python.sh", {
   python_version = var.python_version
   project_name = var.project_name
+  app_port = var.app_port
   scripts = {
     system_update        = file("${path.module}/scripts/system-update.sh")
     python_install       = file("${path.module}/scripts/python-install.sh")
