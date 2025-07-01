@@ -194,9 +194,6 @@ resource "aws_instance" "web_server" {
     app_port     = var.app_port
     scripts = {
       system_update   = file("${path.module}/scripts/system-update.sh")
-      nodejs_install  = file("${path.module}/scripts/nodejs-install.sh")
-      nginx_setup     = file("${path.module}/scripts/nginx-setup.sh")
-      app_setup       = file("${path.module}/scripts/app-setup.sh")
       aws_cli_install = file("${path.module}/scripts/aws-cli-install.sh")
     }
   }))

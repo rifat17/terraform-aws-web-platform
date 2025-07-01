@@ -2,6 +2,9 @@
 project_name = "my-web-app"
 environment = "development"
 
+# Note: Setup scripts will be prepared in ~/setup-scripts/ on the server
+# SSH to the server and run ./setup-all.sh or individual scripts as needed
+
 # AWS Configuration
 aws_region = "us-east-1"
 aws_profile = "default"

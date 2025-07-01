@@ -4,12 +4,13 @@ This Terraform configuration creates a modular AWS infrastructure for web applic
 
 ## What's Included
 
-- **EC2 Instance**: Ubuntu 22.04 LTS with auto-configuration
-- **Security Group**: Allows SSH (22), HTTP (80), HTTPS (443), and app dev server (3000/8000)
+- **EC2 Instance**: Ubuntu 22.04 LTS with prepared setup scripts
+- **Security Group**: Allows SSH (22), HTTP (80), HTTPS (443), and configurable app port
 - **Elastic IP**: Static IP address for the instance
 - **Key Pair**: SSH key management with auto-generation option
-- **Modular Setup Scripts**: Separate scripts for different components
+- **Ready-to-Run Scripts**: Pre-configured setup scripts in `~/setup-scripts/`
 - **Multi-Language Support**: Node.js or Python runtime environments
+- **Flexible Setup**: Choose which components to install
 
 ## Prerequisites
 
@@ -41,7 +42,7 @@ This Terraform configuration creates a modular AWS infrastructure for web applic
 ## Application Types
 
 ### Node.js Applications (Default)
-Uses `user_data.sh` with Node.js, PM2, and Nginx configured for port 3000.
+Uses `user_data.sh` - creates setup scripts for Node.js, PM2, and Nginx.
 
 ### Python Applications
 Switch to Python setup by updating `main.tf`:
@@ -51,42 +52,69 @@ user_data = base64encode(templatefile("${path.module}/user_data_python.sh", {
   project_name = var.project_name
   app_port = var.app_port
   scripts = {
-    system_update        = file("${path.module}/scripts/system-update.sh")
-    python_install       = file("${path.module}/scripts/python-install.sh")
-    nginx_setup_python   = file("${path.module}/scripts/nginx-setup-python.sh")
-    python_app_setup     = file("${path.module}/scripts/python-app-setup.sh")
-    aws_cli_install      = file("${path.module}/scripts/aws-cli-install.sh")
+    system_update = file("${path.module}/scripts/system-update.sh")
+    aws_cli_install = file("${path.module}/scripts/aws-cli-install.sh")
   }
 }))
 ```
 
-## Modular Scripts
+## Setup Scripts
 
-Scripts are organized by responsibility in the `scripts/` directory:
+After deployment, find ready-to-run scripts in `~/setup-scripts/`:
+
+**Node.js Setup:**
 - `system-update.sh` - System updates and essential packages
-- `nodejs-install.sh` / `python-install.sh` - Runtime installation
-- `nginx-setup.sh` / `nginx-setup-python.sh` - Web server configuration
-- `app-setup.sh` / `python-app-setup.sh` - Application setup
+- `nodejs-install.sh` - Node.js and PM2 installation
+- `nginx-setup.sh` - Nginx configuration for Node.js apps
+- `app-setup.sh` - Application directory and deployment script
 - `aws-cli-install.sh` - AWS CLI installation
+- `setup-all.sh` - Run all scripts at once
 
-Comment out any script execution in `user_data.sh` to skip components.
+**Python Setup:**
+- `system-update.sh` - System updates and essential packages
+- `python-install.sh` - Python and dependencies installation
+- `nginx-setup.sh` - Nginx configuration for Python apps
+- `app-setup.sh` - Application directory and deployment script
+- `aws-cli-install.sh` - AWS CLI installation
+- `setup-all.sh` - Run all scripts at once
 
-## Deployment
+## Server Setup
 
-After infrastructure is ready:
+After infrastructure is ready, SSH to the server and run setup scripts:
 
 ```bash
 # SSH to the server
 ssh -i <key-file> ubuntu@<PUBLIC_IP>
 
-# The setup scripts create a deploy.sh script on the server
-# Use it to deploy your application code
+# Check available setup scripts
+cd ~/setup-scripts
+cat README.md
+
+# Run all setup scripts at once
+./setup-all.sh
+
+# Or run individual scripts as needed
+sudo ./system-update.sh
+sudo ./nodejs-install.sh     # or python-install.sh for Python
+sudo ./nginx-setup.sh
+sudo ./app-setup.sh
+sudo ./aws-cli-install.sh
+```
+
+## Application Deployment
+
+After server setup, deploy your application:
+
+```bash
+# Upload your code (example with rsync)
+rsync -avz --exclude='node_modules/' --exclude='.git/' \
+  -e 'ssh -i <key-file>' \
+  ./ ubuntu@<PUBLIC_IP>:~/<project-name>/
+
+# Use the generated deployment script
 ./deploy.sh
 
-# Or implement your own deployment strategy:
-# - Upload code via rsync, git clone, or CI/CD
-# - Install dependencies and build
-# - Start/restart application services
+# Or implement your own deployment strategy
 ```
 
 ## Configuration Variables
@@ -152,6 +180,15 @@ To destroy the infrastructure:
 ```bash
 terraform destroy
 ```
+
+## Benefits of Script Preparation Approach
+
+- **Faster Instance Startup**: No long-running setup during boot
+- **User Control**: Choose which components to install
+- **Debugging Friendly**: Run scripts individually if something fails
+- **Customizable**: Modify scripts before running if needed
+- **Transparent**: See exactly what each script does
+- **Flexible**: Skip components you don't need
 
 ## Security Notes
 
